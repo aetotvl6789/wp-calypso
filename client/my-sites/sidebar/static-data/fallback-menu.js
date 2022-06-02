@@ -94,6 +94,13 @@ export default function buildFallbackResponse( {
 					: [] ),
 				{
 					parent: 'upgrades',
+					slug: 'Add-Ons',
+					title: translate( 'Add-Ons' ),
+					type: 'submenu-item',
+					url: `/add-ons/${ siteDomain }`,
+				},
+				{
+					parent: 'upgrades',
 					slug: 'Domains',
 					title: translate( 'Domains' ),
 					type: 'submenu-item',
