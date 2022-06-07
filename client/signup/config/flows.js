@@ -27,6 +27,17 @@ function dependenciesContainCartItem( dependencies ) {
 	return dependencies.cartItem || dependencies.domainItem || dependencies.themeItem;
 }
 
+function getOnboardingSteps() {
+	const steps = isEnabled( 'signup/professional-email-step' )
+		? [ 'user', 'domains', 'emails', 'plans' ]
+		: [ 'user', 'domains', 'plans' ];
+
+	if ( isEnabled( 'signup/addons-step' ) ) {
+		steps.push( 'addons' );
+	}
+	return steps;
+}
+
 function getSiteDestination( dependencies ) {
 	let protocol = 'https';
 
@@ -170,6 +181,7 @@ const flows = generateFlows( {
 	getDestinationFromIntent,
 	getDIFMSignupDestination,
 	getDIFMSiteContentCollectionDestination,
+	getOnboardingSteps,
 } );
 
 function removeUserStepFromFlow( flow ) {

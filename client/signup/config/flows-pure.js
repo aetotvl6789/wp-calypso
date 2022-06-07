@@ -14,6 +14,7 @@ export function generateFlows( {
 	getDestinationFromIntent = noop,
 	getDIFMSignupDestination = noop,
 	getDIFMSiteContentCollectionDestination = noop,
+	getOnboardingSteps = noop,
 } = {} ) {
 	const flows = [
 		{
@@ -100,9 +101,7 @@ export function generateFlows( {
 		},
 		{
 			name: 'onboarding',
-			steps: isEnabled( 'signup/professional-email-step' )
-				? [ 'user', 'domains', 'emails', 'plans', 'addons' ]
-				: [ 'user', 'domains', 'plans', 'addons' ],
+			steps: getOnboardingSteps(),
 			destination: getSignupDestination,
 			description: 'Abridged version of the onboarding flow. Read more in https://wp.me/pau2Xa-Vs.',
 			lastModified: '2020-12-10',
