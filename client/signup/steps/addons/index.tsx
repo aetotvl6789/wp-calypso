@@ -3,9 +3,12 @@ import { MinimalRequestCartProduct } from '@automattic/shopping-cart';
 import styled from '@emotion/styled';
 import { useTranslate } from 'i18n-calypso';
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import CardHeading from 'calypso/components/card-heading';
 import CalypsoShoppingCartProvider from 'calypso/my-sites/checkout/calypso-shopping-cart-provider';
 import StepWrapper from 'calypso/signup/step-wrapper';
+import { getProductsList } from 'calypso/state/products-list/selectors';
+import { ProductListItem } from 'calypso/state/products-list/selectors/get-products-list';
 import { submitSignupStep } from 'calypso/state/signup/progress/actions';
 import './styles.scss';
 
@@ -25,10 +28,37 @@ const AddonsContainer = styled.div`
 	grid-template-columns: 1fr 1fr;
 	column-gap: 2rem;
 	row-gap: 1rem;
+
+	.addons__card {
+		width: 100%;
+	}
+
+	h2 {
+		font-weight: 500;
+	}
 `;
+
+const ButtonContainer = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+`;
+
+const allowedAddons = [ 'unlimited_themes', 'no-adverts/no-adverts.php', 'custom-design' ];
 
 const Addons = ( { onToggleAddon, cart }: AddonsProps ) => {
 	const translate = useTranslate();
+	const productsList: Record< string, ProductListItem > = useSelector( getProductsList );
+	const addons: ProductListItem[] = Object.keys( productsList ).reduce(
+		( arr: ProductListItem[], key ) => {
+			if ( allowedAddons.includes( key ) ) {
+				arr.push( productsList[ key ] );
+			}
+			return arr;
+		},
+		[]
+	);
 
 	const getAddon = ( addon: string ) =>
 		cart.find( ( product: MinimalRequestCartProduct ) => product.product_slug === addon );
@@ -36,50 +66,31 @@ const Addons = ( { onToggleAddon, cart }: AddonsProps ) => {
 
 	return (
 		<AddonsContainer>
-			<Card>
-				<h3>{ translate( 'Premium themes' ) }</h3>
-				<p>
-					Aliquam vel augue vel magna laoreet faucibus sit amet a mauris. Sed eros elit, vehicula eu
-					nisi a, aliquet ullamcorper tortor. Learn more{ ' ' }
-				</p>
-				<Button onClick={ () => onToggleAddon( 'unlimited_themes' ) }>
-					{ translate( 'Add to my plan' ) }
-				</Button>
-				{ getAddon( 'unlimited_themes' ) && <span>{ addedText }</span> }
-			</Card>
-			<Card>
-				<h3>{ translate( 'Remove ads' ) }</h3>
-				<p>
-					Aliquam vel augue vel magna laoreet faucibus sit amet a mauris. Sed eros elit, vehicula eu
-					nisi a, aliquet ullamcorper tortor. Learn more{ ' ' }
-				</p>
-				<Button onClick={ () => onToggleAddon( 'no-adverts/no-adverts.php' ) }>
-					{ translate( 'Add to my plan' ) }
-				</Button>
-				{ getAddon( 'no-adverts/no-adverts.php' ) && <span>{ addedText }</span> }
-			</Card>
-			<Card>
-				<h3>{ translate( 'Unlimited admin users' ) }</h3>
-				<p>
-					Aliquam vel augue vel magna laoreet faucibus sit amet a mauris. Sed eros elit, vehicula eu
-					nisi a, aliquet ullamcorper tortor. Learn more{ ' ' }
-				</p>
-				<Button onClick={ () => onToggleAddon( 'unlimited-admins' ) }>
-					{ translate( 'Add to my plan' ) }
-				</Button>
-				{ getAddon( 'unlimited-admins' ) && <span>{ addedText }</span> }
-			</Card>
-			<Card>
-				<h3>{ translate( 'Premium design tools' ) }</h3>
-				<p>
-					Aliquam vel augue vel magna laoreet faucibus sit amet a mauris. Sed eros elit, vehicula eu
-					nisi a, aliquet ullamcorper tortor. Learn more{ ' ' }
-				</p>
-				<Button onClick={ () => onToggleAddon( 'custom-design' ) }>
-					{ translate( 'Add to my plan' ) }
-				</Button>
-				{ getAddon( 'custom-design' ) && <span>{ addedText }</span> }
-			</Card>
+			{ addons.map( ( addon: ProductListItem ) => (
+				<Card key={ addon.product_id } className="addons__card">
+					<CardHeading tagName="h2" size={ 16 }>
+						{ addon.product_name }
+					</CardHeading>
+					<CardHeading tagName="h6" size={ 14 }>
+						{ addon.cost_display }
+					</CardHeading>
+					<p>{ addon.description }</p>
+					<ButtonContainer>
+						{ getAddon( addon.product_slug ) ? (
+							<>
+								<Button primary={ true } onClick={ () => onToggleAddon( addon.product_slug ) }>
+									{ translate( 'Add to my plan' ) }
+								</Button>
+								<span>{ addedText }</span>
+							</>
+						) : (
+							<Button onClick={ () => onToggleAddon( addon.product_slug ) }>
+								{ translate( 'Remove from my plan' ) }
+							</Button>
+						) }
+					</ButtonContainer>
+				</Card>
+			) ) }
 		</AddonsContainer>
 	);
 };
