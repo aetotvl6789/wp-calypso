@@ -19,6 +19,24 @@ import { BlockInserter, OpenInlineInserter } from './shared-types';
 import type { SiteType } from '../../lib/utils';
 import type { PreviewOptions, EditorSidebarTab, PrivacyOptions, Schedule } from '../components';
 
+interface PublishResponse {
+	body: {
+		id: number;
+		link: string;
+		slug: string;
+		status: string;
+		title: {
+			raw: string;
+			rendered: string;
+		};
+		content: {
+			raw: string;
+			rendered: string;
+			protected: boolean;
+		};
+	};
+}
+
 const selectors = {
 	// iframe and editor
 	editorFrame: 'iframe.is-loaded',
@@ -553,30 +571,30 @@ export class EditorPage {
 	 * @param {boolean} visit Whether to then visit the page.
 	 * @returns {URL} Published article's URL.
 	 */
-	async publish( { visit = false }: { visit?: boolean } = {} ): Promise< URL > {
+	async publish( { visit = false }: { visit?: boolean } = {} ): Promise< PublishResponse > {
+		let apiURLRegex = /.*\/sites\/.*\/posts.*/;
+		if ( this.target === 'atomic' ) {
+			apiURLRegex = /.*\/posts\/.*/;
+		}
+
 		// Click on the main publish action button on the toolbar.
 		await this.editorToolbarComponent.clickPublish();
 
 		if ( await this.editorPublishPanelComponent.panelIsOpen() ) {
 			// Invoke the second stage of the publish step which handles the
 			// publish checklist panel if it is present.
+			// This typically occurs if the post is in draft and has not been
+			// published previously.
 			await this.editorPublishPanelComponent.publish();
 		}
 
-		// In some cases the post may be published but the EditorPublishPanelComponent
-		// is either not present or forcibly dismissed due to a bug.
-		// eg. publishing a post with some of the Jetpack Earn blocks.
-		// By racing the two methods of obtaining the published article's URL, we can
-		// guarantee that one or the other works.
-		const publishedURL: URL = await Promise.race( [
-			this.editorPublishPanelComponent.getPublishedURL(),
-			this.getPublishedURLFromToast(),
-		] );
+		const rawResponse = await this.page.waitForResponse( apiURLRegex );
+		const response: PublishResponse = await rawResponse.json();
 
 		if ( visit ) {
-			await this.visitPublishedPost( publishedURL.href );
+			await this.visitPublishedPost( response.body.link );
 		}
-		return publishedURL;
+		return response;
 	}
 
 	/**
