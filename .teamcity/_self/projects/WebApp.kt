@@ -764,11 +764,21 @@ object PreReleaseE2ETests : E2EBuildType(
 	buildUuid = "9c2f634f-6582-4245-bb77-fb97d9f16533",
 	buildName = "Pre-Release E2E Tests",
 	buildDescription = "Runs a pre-release suite of E2E tests against trunk on staging, intended to be run after PR merge, but before deployment to production.",
+	getCalypsoLiveURL = """
+		chmod +x ./bin/get-calypso-live-url.sh
+		CALYPSO_LIVE_URL=${'$'}(./bin/get-calypso-live-url.sh ${BuildDockerImage.depParamRefs.buildNumber})
+		if [[ ${'$'}? -ne 0 ]]; then
+			// Command failed. CALYPSO_LIVE_URL contains stderr
+			echo ${'$'}CALYPSO_LIVE_URL
+			exit 1
+		fi
+	""".trimIndent(),
 	concurrentBuilds = 1,
 	testGroup = "calypso-release",
 	buildParams = {
 		param("env.VIEWPORT_NAME", "desktop")
-		param("env.CALYPSO_BASE_URL", "https://wpcalypso.wordpress.com")
+		param("env.LIVEBRANCHES", "true")
+		// param("env.CALYPSO_BASE_URL", "https://wpcalypso.wordpress.com")
 	},
 	buildFeatures = {
 		notifications {
