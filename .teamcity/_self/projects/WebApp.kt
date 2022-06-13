@@ -795,6 +795,11 @@ object PreReleaseE2ETests : E2EBuildType(
 			buildFinishedSuccessfully = true
 			buildProbablyHanging = true
 		}
+	},
+	buildDependencies = {
+		snapshot(BuildDockerImage) {
+			onDependencyFailure = FailureAction.FAIL_TO_START
+		}
 	}
 )
 
