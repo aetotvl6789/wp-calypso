@@ -107,6 +107,22 @@ export const siteSetupFlow: Flow = {
 					setStepProgress( { progress: 4, count: 4 } );
 					break;
 			}
+		}
+		if ( intent === 'build' ) {
+			switch ( currentStep ) {
+				case 'vertical':
+					setStepProgress( { progress: 1, count: 3 } );
+					break;
+				case 'intent':
+					setStepProgress( { progress: 2, count: 4 } );
+					break;
+				case 'designSetup':
+					setStepProgress( { progress: 3, count: 4 } );
+					break;
+				case 'processing':
+					setStepProgress( { progress: 4, count: 4 } );
+					break;
+			}
 		} else {
 			setStepProgress( undefined );
 		}
