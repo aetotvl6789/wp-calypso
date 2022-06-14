@@ -11,40 +11,40 @@
  */
 body,
 button {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen-Sans', 'Ubuntu',
-        'Cantarell', 'Helvetica Neue', sans-serif;
-    text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen-Sans', 'Ubuntu',
+		'Cantarell', 'Helvetica Neue', sans-serif;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 
-    // Basic stylings
-    margin: 0;
-    line-height: 1.5;
+	// Basic stylings
+	margin: 0;
+	line-height: 1.5;
 
-    h1,
-    h2,
-    h3,
-    p {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen-Sans', 'Ubuntu',
-            'Cantarell', 'Helvetica Neue', sans-serif;
-        font-weight: 400;
-        margin: 0;
-    }
+	h1,
+	h2,
+	h3,
+	p {
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen-Sans', 'Ubuntu',
+			'Cantarell', 'Helvetica Neue', sans-serif;
+		font-weight: 400;
+		margin: 0;
+	}
 
-    a,
-    a:visited {
-        text-decoration: none;
-        color: var( --color-link );
-    }
+	a,
+	a:visited {
+		text-decoration: none;
+		color: var( --color-link );
+	}
 
-    button {
-        background-color: transparent;
-        border: none;
-    }
+	button {
+		background-color: transparent;
+		border: none;
+	}
 
-    ul {
-        padding: 0;
-    }
+	ul {
+		padding: 0;
+	}
 }
 
 /**
@@ -52,87 +52,87 @@ button {
  */
 .site-setup,
 .anchor-fm {
-    position: relative;
-    padding: 60px 0 0;
-    box-sizing: border-box;
+	position: relative;
+	padding: 60px 0 0;
+	box-sizing: border-box;
 
-    &.courses {
-        padding: 0;
+	&.courses {
+		padding: 0;
 
-        .signup-header {
-            z-index: 1;
-            color: #fff;
+		.signup-header {
+			z-index: 1;
+			color: #fff;
 
-            svg path {
-                fill: #fff;
-                stroke: #fff;
-            }
-        }
-    }
- 
-    .progress-bar {
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        border-radius: 0;
-        z-index: 99;
-    }
+			svg path {
+				fill: #fff;
+				stroke: #fff;
+			}
+		}
+	}
 
-    .import-step,
-    .importer-step {
-        @include onboarding-block-margin;
-    }
+	.progress-bar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		border-radius: 0;
+		z-index: 99;
+	}
 
-    /**
-     * Signup Header
-     */
-    .signup-header {
-        .wordpress-logo {
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            fill: var( --color-text );
-            stroke: var( --color-text );
-            transform-origin: 0 0;
-        }
+	.import-step,
+	.importer-step {
+		@include onboarding-block-margin;
+	}
 
-        .signup-header__right {
-            top: 22px;
-            right: 20px;
+	/**
+ 	 * Signup Header
+ 	 */
+	.signup-header {
+		.wordpress-logo {
+			position: absolute;
+			left: 20px;
+			top: 20px;
+			fill: var( --color-text );
+			stroke: var( --color-text );
+			transform-origin: 0 0;
+		}
 
-            .flow-progress-indicator {
-                font-weight: 500;
-                /* stylelint-disable-line */
-                font-size: 0.875rem;
-                color: var( --studio-gray-30 );
-            }
-        }
+		.signup-header__right {
+			top: 22px;
+			right: 20px;
 
-        @include break-small {
-            .wordpress-logo {
-                left: 24px;
-            }
+			.flow-progress-indicator {
+				font-weight: 500;
+				/* stylelint-disable-line */
+				font-size: 0.875rem;
+				color: var( --studio-gray-30 );
+			}
+		}
 
-            .signup-header__right {
-                right: 24px;
-            }
-        }
-    }
+		@include break-small {
+			.wordpress-logo {
+				left: 24px;
+			}
 
-    /**
-     * Step Container
-     */
-    .step-container {
-        --color-accent: #117ac9;
-        --color-accent-60: #0e64a5;
-    }
+			.signup-header__right {
+				right: 24px;
+			}
+		}
+	}
+
+	/**
+ 	 * Step Container
+ 	 */
+	.step-container {
+		--color-accent: #117ac9;
+		--color-accent-60: #0e64a5;
+	}
 }
 
 @media ( max-width: 660px ) {
-    body.is-section-stepper .wpcom-site {
-        .inline-help {
-            bottom: 74px;
-        }
-    }
+	body.is-section-stepper .wpcom-site {
+		.inline-help {
+			bottom: 74px;
+		}
+	}
 }
