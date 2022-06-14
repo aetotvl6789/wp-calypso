@@ -9,6 +9,7 @@ const ConversationCommentListExample = () => {
 	const post = posts[ 0 ];
 
 	return (
+		// eslint-disable-next-line wpcalypso/jsx-classname-namespace
 		<div className="design-assets__group">
 			<ConversationCommentList
 				commentsFetchingStatus={ {} }

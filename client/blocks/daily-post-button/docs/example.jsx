@@ -1,6 +1,7 @@
 import DailyPostButton from 'calypso/blocks/daily-post-button';
 const DailyPostButtonExample = () => {
 	return (
+		// eslint-disable-next-line wpcalypso/jsx-classname-namespace
 		<div className="design-assets__group">
 			<DailyPostButton
 				post={ {

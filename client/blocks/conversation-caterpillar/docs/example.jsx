@@ -5,6 +5,7 @@ import { comments, commentsTree } from 'calypso/blocks/conversation-caterpillar/
 
 const ConversationCaterpillarExample = () => {
 	return (
+		// eslint-disable-next-line wpcalypso/jsx-classname-namespace
 		<div className="design-assets__group">
 			<Card>
 				<ConversationCaterpillar

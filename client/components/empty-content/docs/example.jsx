@@ -1,3 +1,4 @@
+/* eslint-disable wpcalypso/jsx-classname-namespace */
 import EmptyContent from 'calypso/components/empty-content';
 
 const EmptyContentExample = ( props ) => {
