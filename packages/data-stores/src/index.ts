@@ -1,3 +1,4 @@
+import * as Analyzer from './analyzer';
 import * as Auth from './auth';
 import * as AutomatedTransferEligibility from './automated-transfer-eligibility';
 import * as DomainSuggestions from './domain-suggestions';
@@ -28,6 +29,7 @@ export { useSibylQuery } from './support-queries/use-sibyl-query';
 export * from './site/types';
 
 export {
+	Analyzer,
 	Auth,
 	User,
 	DomainSuggestions,
