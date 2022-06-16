@@ -19,7 +19,10 @@ export type NavigationControls = {
 	/**
 	 * Submits the answers provided in the flow
 	 */
-	submit?: ( providedDependencies?: ProvidedDependencies, ...params: string[] ) => void;
+	submit?: (
+		providedDependencies?: ProvidedDependencies,
+		...params: string[] | Record< string, any >[]
+	) => void;
 	/**
 	 * Exits the flow and continue to the given path
 	 */
@@ -33,7 +36,7 @@ export type UseStepHook = () => StepPath[];
 
 export type UseStepNavigationHook = (
 	currentStep: StepPath,
-	navigate: ( stepName: StepPath | `${ StepPath }?${ string }` ) => void,
+	navigate: ( stepName: StepPath | `${ StepPath }?${ string }`, extraData?: any ) => void,
 	steps?: StepPath[]
 ) => NavigationControls;
 

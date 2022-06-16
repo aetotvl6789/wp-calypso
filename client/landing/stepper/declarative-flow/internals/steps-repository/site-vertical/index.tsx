@@ -56,33 +56,51 @@ const SiteVertical: Step = function SiteVertical( { navigation } ) {
 	}
 
 	return (
-		<StepContainer
-			stepName={ 'site-vertical' }
-			goNext={ goNext }
-			headerImageUrl={ siteVerticalImage }
-			skipLabelText={ translate( 'Skip to dashboard' ) }
-			skipButtonAlign={ 'top' }
-			isHorizontalLayout={ true }
-			hideBack={ true }
-			formattedHeader={
-				<FormattedHeader
-					id={ 'site-vertical-header' }
-					headerText={ headerText }
-					subHeaderText={ subHeaderText }
-					align={ 'left' }
-				/>
-			}
-			stepContent={
-				<SiteVerticalForm
-					defaultVertical={ siteVertical }
-					isSkipSynonyms={ Boolean( isSkipSynonyms ) }
-					isBusy={ isBusy }
-					onSelect={ handleSiteVerticalSelect }
-					onSubmit={ handleSubmit }
-				/>
-			}
-			recordTracksEvent={ recordTracksEvent }
-		/>
+		<>
+			<StepContainer
+				stepName={ 'site-vertical' }
+				goNext={ goNext }
+				headerImageUrl={ siteVerticalImage }
+				skipLabelText={ translate( 'Skip to dashboard' ) }
+				skipButtonAlign={ 'top' }
+				isHorizontalLayout={ true }
+				hideBack={ true }
+				formattedHeader={
+					<FormattedHeader
+						id={ 'site-vertical-header' }
+						headerText={ headerText }
+						subHeaderText={ subHeaderText }
+						align={ 'left' }
+					/>
+				}
+				stepContent={
+					<>
+						<button
+							onClick={ ( e ) => {
+								e.preventDefault();
+								submit?.( {}, [ { error: 'OH NO! 🙀', message: 'This is an error message!' } ] );
+							} }
+							className="button site-vertical__submit-button is-primary"
+							style={ {
+								position: 'absolute',
+								bottom: '249px',
+								right: '130px',
+							} }
+						>
+							Trigger Error
+						</button>
+						<SiteVerticalForm
+							defaultVertical={ siteVertical }
+							isSkipSynonyms={ Boolean( isSkipSynonyms ) }
+							isBusy={ isBusy }
+							onSelect={ handleSiteVerticalSelect }
+							onSubmit={ handleSubmit }
+						/>
+					</>
+				}
+				recordTracksEvent={ recordTracksEvent }
+			/>
+		</>
 	);
 };
 

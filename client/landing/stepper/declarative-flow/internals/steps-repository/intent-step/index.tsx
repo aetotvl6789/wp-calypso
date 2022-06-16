@@ -18,7 +18,7 @@ import './style.scss';
 /**
  * The intent capture step
  */
-const IntentStep: Step = function IntentStep( { navigation } ) {
+const IntentStep: Step = function IntentStep( { navigation, data } ) {
 	const { goBack, goNext, submit } = navigation;
 	const translate = useTranslate();
 	const headerText = translate( 'Where will you start?' );
@@ -45,38 +45,41 @@ const IntentStep: Step = function IntentStep( { navigation } ) {
 	};
 
 	return (
-		<StepContainer
-			stepName={ 'intent-step' }
-			headerImageUrl={ intentImageUrl }
-			goBack={ goBack }
-			goNext={ goNext }
-			skipLabelText={ translate( 'Skip to dashboard' ) }
-			skipButtonAlign={ 'top' }
-			hideBack={
-				! (
-					isEnabled( 'signup/site-vertical-step' ) &&
-					englishLocales.includes( translate.localeSlug || i18nDefaultLocaleSlug )
-				)
-			}
-			isHorizontalLayout={ true }
-			formattedHeader={
-				<FormattedHeader
-					id={ 'intent-header' }
-					headerText={ headerText }
-					subHeaderText={ subHeaderText }
-					align={ 'left' }
-				/>
-			}
-			stepContent={
-				<IntentScreen
-					intents={ intents }
-					intentsAlt={ intentsAlt }
-					onSelect={ submitIntent }
-					preventWidows={ preventWidows }
-				/>
-			}
-			recordTracksEvent={ recordTracksEvent }
-		/>
+		<>
+			{ data?.message && <h1>{ data.message }</h1> }
+			<StepContainer
+				stepName={ 'intent-step' }
+				headerImageUrl={ intentImageUrl }
+				goBack={ goBack }
+				goNext={ goNext }
+				skipLabelText={ translate( 'Skip to dashboard' ) }
+				skipButtonAlign={ 'top' }
+				hideBack={
+					! (
+						isEnabled( 'signup/site-vertical-step' ) &&
+						englishLocales.includes( translate.localeSlug || i18nDefaultLocaleSlug )
+					)
+				}
+				isHorizontalLayout={ true }
+				formattedHeader={
+					<FormattedHeader
+						id={ 'intent-header' }
+						headerText={ headerText }
+						subHeaderText={ subHeaderText }
+						align={ 'left' }
+					/>
+				}
+				stepContent={
+					<IntentScreen
+						intents={ intents }
+						intentsAlt={ intentsAlt }
+						onSelect={ submitIntent }
+						preventWidows={ preventWidows }
+					/>
+				}
+				recordTracksEvent={ recordTracksEvent }
+			/>
+		</>
 	);
 };
 
