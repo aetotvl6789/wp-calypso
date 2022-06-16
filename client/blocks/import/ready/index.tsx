@@ -178,7 +178,18 @@ const ReadyStep: React.FunctionComponent< ReadyProps > = ( props ) => {
 		} );
 	};
 
+	const recordImportGuideEvent = () => {
+		if ( ! isModalDetailsOpen ) return;
+
+		recordTracksEvent( trackEventName, {
+			...trackEventParams,
+			action: 'guide-modal',
+			platform,
+		} );
+	};
+
 	useEffect( recordReadyScreenEvent, [] );
+	useEffect( recordImportGuideEvent, [ isModalDetailsOpen ] );
 
 	return (
 		<div className="import-layout__center">
