@@ -1,8 +1,9 @@
+import { useSelect, useDispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import { useEffect } from 'react';
 import { Switch, Route, Redirect, generatePath, useHistory, useLocation } from 'react-router-dom';
 import WordPressLogo from 'calypso/components/wordpress-logo';
-import { STEPPER_STORE } from 'calypso/landing/stepper/stores';
+import { STEPPER_INTERNAL_STORE } from 'calypso/landing/stepper/stores';
 import SignupHeader from 'calypso/signup/signup-header';
 import recordStepStart from './analytics/record-step-start';
 import * as Steps from './steps-repository';
@@ -29,10 +30,10 @@ export const FlowRenderer: React.FC< { flow: Flow } > = ( { flow } ) => {
 	const currentRoute = location.pathname.substring( 1 ) as StepPath;
 	const history = useHistory();
 	const { search } = useLocation();
-	const { setStepData } = useDispatch( STEPPER_STORE );
+	const { setStepData } = useDispatch( STEPPER_INTERNAL_STORE );
 	const stepNavigation = flow.useStepNavigation( currentRoute, async ( path, extraData = null ) => {
 		if ( extraData ) {
-			await setStepData( extraData );
+			setStepData( extraData );
 		}
 
 		const _path = path.includes( '?' ) // does path contain search params
@@ -41,7 +42,7 @@ export const FlowRenderer: React.FC< { flow: Flow } > = ( { flow } ) => {
 
 		history.push( _path, stepPaths );
 	} );
-	const stepData = useSelect( ( select ) => select( STEPPER_STORE ).getStepData() );
+	const stepData = useSelect( ( select ) => select( STEPPER_INTERNAL_STORE ).getStepData() );
 
 	flow.useSideEffect?.();
 
