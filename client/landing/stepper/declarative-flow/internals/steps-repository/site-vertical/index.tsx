@@ -84,10 +84,26 @@ const SiteVertical: Step = function SiteVertical( { navigation } ) {
 							style={ {
 								position: 'absolute',
 								bottom: '249px',
+								right: '280px',
+							} }
+						>
+							Error 1
+						</button>
+						<button
+							onClick={ ( e ) => {
+								e.preventDefault();
+								submit?.( {}, [
+									{ error: '😱😱😱😱😱', message: 'Something else bad happened!' },
+								] );
+							} }
+							className="button site-vertical__submit-button is-primary"
+							style={ {
+								position: 'absolute',
+								bottom: '249px',
 								right: '130px',
 							} }
 						>
-							Trigger Error
+							Error 2
 						</button>
 						<SiteVerticalForm
 							defaultVertical={ siteVertical }
