@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React from 'react';
 import Capture from 'calypso/blocks/import-light/capture';
 import Colors from 'calypso/blocks/import-light/colors';
-import Scanning from 'calypso/blocks/import-light/scanning';
+import Scanning from 'calypso/blocks/import-light/analysis-progress';
 import Summary from 'calypso/blocks/import-light/summary';
 import StepWrapper from 'calypso/signup/step-wrapper';
 import type { FunctionComponent } from 'react';
