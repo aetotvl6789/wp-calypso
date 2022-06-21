@@ -9022,22 +9022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wordpress/element@npm:^4.0.1, @wordpress/element@npm:^4.0.4, @wordpress/element@npm:^4.1.1, @wordpress/element@npm:^4.5.0, @wordpress/element@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "@wordpress/element@npm:4.7.0"
-  dependencies:
-    "@babel/runtime": ^7.16.0
-    "@types/react": ^17.0.37
-    "@types/react-dom": ^17.0.11
-    "@wordpress/escape-html": ^2.9.0
-    lodash: ^4.17.21
-    react: ^17.0.2
-    react-dom: ^17.0.2
-  checksum: 9c2a3ac25688e870e514910eb60a315fb9ef88a19772eb8e8e6554cff3073c8cb9f9d4b79ab6eeaafaa38d3e7cd2b01002793cb33496e150df9dadea6b41c7d0
-  languageName: node
-  linkType: hard
-
-"@wordpress/element@npm:^4.8.0":
+"@wordpress/element@npm:^4.0.1, @wordpress/element@npm:^4.0.4, @wordpress/element@npm:^4.1.1, @wordpress/element@npm:^4.5.0, @wordpress/element@npm:^4.7.0, @wordpress/element@npm:^4.8.0":
   version: 4.8.0
   resolution: "@wordpress/element@npm:4.8.0"
   dependencies:
@@ -9083,21 +9068,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wordpress/escape-html@npm:^2.10.0":
+"@wordpress/escape-html@npm:^2.10.0, @wordpress/escape-html@npm:^2.2.0, @wordpress/escape-html@npm:^2.2.1, @wordpress/escape-html@npm:^2.2.3, @wordpress/escape-html@npm:^2.9.0":
   version: 2.10.0
   resolution: "@wordpress/escape-html@npm:2.10.0"
   dependencies:
     "@babel/runtime": ^7.16.0
   checksum: b5953e90e3e57f5f2626e2ba49810757a59eb4c17fef3fcee7c976980ac47e7ee59d14b954c30e63e77e45666e3e1f46b890d6dca42146844318bedee0d881b1
-  languageName: node
-  linkType: hard
-
-"@wordpress/escape-html@npm:^2.2.0, @wordpress/escape-html@npm:^2.2.1, @wordpress/escape-html@npm:^2.2.3, @wordpress/escape-html@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "@wordpress/escape-html@npm:2.9.0"
-  dependencies:
-    "@babel/runtime": ^7.16.0
-  checksum: edda7a600b3a74a5589e900dbbb7cfb5c3866880cbd6632bff5b89dda1c2e5ab1ff2aa583069a274f315f843e4ecfce2188b99cc0e209a0ed2e92a2a23653ca3
   languageName: node
   linkType: hard
 
@@ -9548,18 +9524,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wordpress/primitives@npm:^3.0.1, @wordpress/primitives@npm:^3.0.4, @wordpress/primitives@npm:^3.1.1, @wordpress/primitives@npm:^3.5.0, @wordpress/primitives@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@wordpress/primitives@npm:3.7.0"
-  dependencies:
-    "@babel/runtime": ^7.16.0
-    "@wordpress/element": ^4.7.0
-    classnames: ^2.3.1
-  checksum: 7d6ac1781c70be51290b696ea3a1bcba571e21d8bba4627971bbf21d2e7951c046304bee00f1488063e08990376550be6bf39aae4da06a2d8f315bdaaf04dda1
-  languageName: node
-  linkType: hard
-
-"@wordpress/primitives@npm:^3.8.0":
+"@wordpress/primitives@npm:^3.0.1, @wordpress/primitives@npm:^3.0.4, @wordpress/primitives@npm:^3.1.1, @wordpress/primitives@npm:^3.5.0, @wordpress/primitives@npm:^3.7.0, @wordpress/primitives@npm:^3.8.0":
   version: 3.8.0
   resolution: "@wordpress/primitives@npm:3.8.0"
   dependencies:
