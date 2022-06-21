@@ -7,11 +7,9 @@ interface Color {
 }
 
 export interface ColorsData {
-	logo: Color[];
-	links: Color[];
-	favicon: Color[];
-	body?: Color;
-	theme_color?: Color;
+	background: Color[];
+	link: Color[];
+	text: Color[];
 }
 
 export interface AnalyzeColorsResponse {
