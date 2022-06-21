@@ -1,8 +1,9 @@
+import { WPCOM_DIFM_EXTRA_PAGE } from '@automattic/calypso-products';
 import { Button } from '@automattic/components';
 import styled from '@emotion/styled';
 import { useTranslate } from 'i18n-calypso';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView } from 'calypso/signup/difm/components/BrowserView';
 import {
 	HOME_PAGE,
@@ -20,9 +21,12 @@ import {
 } from 'calypso/signup/difm/constants';
 import { useTranslatedPageTitles } from 'calypso/signup/difm/translation-hooks';
 import StepWrapper from 'calypso/signup/step-wrapper';
+import { Dependencies } from 'calypso/signup/types';
+import { requestProductsList } from 'calypso/state/products-list/actions';
+import { getProductBySlug } from 'calypso/state/products-list/selectors';
+import { ProductListItem } from 'calypso/state/products-list/selectors/get-products-list';
 import { saveSignupStep, submitSignupStep } from 'calypso/state/signup/progress/actions';
 import DummyMiniDIFMShoppingCart from './dummy-mini-difm-shopping-cart';
-
 import './style.scss';
 
 const PageGrid = styled.div`
@@ -42,6 +46,10 @@ const PageGrid = styled.div`
 		grid-template-columns: 1fr 1fr 1fr;
 		row-gap: 40px;
 		column-gap: 35px;
+	}
+
+	@media ( max-width: 600px ) {
+		margin: 0 0 145px;
 	}
 `;
 
@@ -99,6 +107,10 @@ function PageCell( { pageId, popular, required, selectedPages, onClick }: PageCe
 	const isSelected = Boolean( selectedIndex > -1 );
 	const title = useTranslatedPageTitles()[ pageId ];
 
+	const extraPageProduct = useSelector( ( state ) =>
+		getProductBySlug( state, WPCOM_DIFM_EXTRA_PAGE )
+	) as ProductListItem;
+
 	return (
 		<GridCellContainer>
 			<BrowserView
@@ -111,6 +123,9 @@ function PageCell( { pageId, popular, required, selectedPages, onClick }: PageCe
 				<div>{ title }</div>
 				{ popular ? <PageCellBadge>{ translate( 'Popular' ) }</PageCellBadge> : null }
 				{ required ? <PageCellBadge>{ translate( 'Required' ) }</PageCellBadge> : null }
+				{ selectedIndex > 4 ? (
+					<PageCellBadge>{ extraPageProduct.cost_display }</PageCellBadge>
+				) : null }
 			</CellLabelContainer>
 		</GridCellContainer>
 	);
@@ -192,6 +207,8 @@ interface StepProps {
 	stepName: string;
 	goToStep: () => void;
 	goToNextStep: () => void;
+	signupDependencies: Dependencies;
+	isPaidPlan: boolean;
 }
 
 const StyledButton = styled( Button )`
@@ -201,7 +218,12 @@ const StyledButton = styled( Button )`
 `;
 
 export default function DIFMPagePicker( props: StepProps ) {
-	const { stepName, goToNextStep } = props;
+	const {
+		stepName,
+		goToNextStep,
+		signupDependencies: { newOrExistingSiteChoice },
+		isPaidPlan,
+	} = props;
 
 	const translate = useTranslate();
 	const dispatch = useDispatch();
@@ -211,13 +233,18 @@ export default function DIFMPagePicker( props: StepProps ) {
 		CONTACT_PAGE,
 	] );
 
+	const extraPageProduct = useSelector( ( state ) =>
+		getProductBySlug( state, WPCOM_DIFM_EXTRA_PAGE )
+	);
 	useEffect( () => {
 		dispatch( saveSignupStep( { stepName } ) );
+		dispatch( requestProductsList() );
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [] );
 
 	const submitPickedPages = () => {
 		dispatch( submitSignupStep( { stepName }, { selectedPageTitles: selectedPages } ) );
+
 		goToNextStep();
 	};
 
@@ -225,9 +252,10 @@ export default function DIFMPagePicker( props: StepProps ) {
 		components: { wbr: <wbr /> },
 	} );
 	const subHeaderText = translate(
-		'Select your desired pages by clicking the thumbnails. {{br}}{{/br}}You can select up to 5 pages for free.',
+		'Select your desired pages by clicking the thumbnails. {{br}}{{/br}}Your site build includes up to 5 pages, add additional pages for %(extraPagePrice)s each.',
 		{
 			components: { br: <br /> },
+			args: { extraPagePrice: extraPageProduct?.cost_display },
 		}
 	);
 
@@ -249,7 +277,13 @@ export default function DIFMPagePicker( props: StepProps ) {
 					{ translate( 'Go to Checkout' ) }
 				</StyledButton>
 			}
-			headerContent={ <DummyMiniDIFMShoppingCart selectedPages={ selectedPages } /> }
+			headerContent={
+				<DummyMiniDIFMShoppingCart
+					selectedPages={ selectedPages }
+					newOrExistingSiteChoice={ newOrExistingSiteChoice }
+					isPaidPlan={ isPaidPlan }
+				/>
+			}
 			{ ...props }
 		/>
 	);

@@ -8,13 +8,35 @@ import {
 import formatCurrency from '@automattic/format-currency';
 import styled from '@emotion/styled';
 import { useTranslate, TranslateResult } from 'i18n-calypso';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCurrentUserCurrencyCode } from 'calypso/state/currency-code/selectors';
-import { requestProductsList } from 'calypso/state/products-list/actions';
 import { getProductBySlug } from 'calypso/state/products-list/selectors';
 import type { ProductListItem } from 'calypso/state/products-list/selectors/get-products-list';
 
+const CartContainer = styled.div`
+	position: relative;
+	@media ( max-width: 600px ) {
+		z-index: 177;
+		margin-bottom: 61px;
+		position: fixed;
+		background: white;
+		width: 100%;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+`;
+const Cart = styled.div`
+	position: initial;
+
+	@media ( max-width: 600px ) {
+		padding: 10px 15px 10px;
+		width: 100%;
+		border-top: 1px solid #dcdcde;
+	}
+`;
 const DummyLineItemContainer = styled.div`
 	display: flex;
 	flex-wrap: wrap;
@@ -25,12 +47,16 @@ const DummyLineItemContainer = styled.div`
 	padding: 20px 0;
 	border-bottom: 1px solid #dcdcde;
 	position: relative;
-	.title {
+	.page-picker__title {
 		flex: 1;
 		word-break: break-word;
 		font-size: 16px;
+		@media ( max-width: 600px ) {
+			display: flex;
+			font-size: 0.9em;
+		}
 	}
-	.meta {
+	.page-picker__meta {
 		color: #646970;
 		font-size: 14px;
 		width: 100%;
@@ -44,6 +70,14 @@ const DummyLineItemContainer = styled.div`
 	span {
 		position: relative;
 	}
+
+	@media ( max-width: 600px ) {
+		font-size: 0.9em;
+		padding: 2px 0;
+		.page-picker__meta {
+			display: none;
+		}
+	}
 `;
 
 const LineItemsWrapper = styled.div`
@@ -54,6 +88,10 @@ const LineItemsWrapper = styled.div`
 	overflow-y: auto;
 	max-height: 75vh;
 	width: 85%;
+	@media ( max-width: 600px ) {
+		width: 100%;
+		margin: 0 0px;
+	}
 `;
 
 const CartTitle = styled.div`
@@ -62,6 +100,10 @@ const CartTitle = styled.div`
 	font-family: 'Recoleta';
 	margin-bottom: 5px;
 	margin-top: 35px;
+	@media ( max-width: 600px ) {
+		font-size: 1.25rem;
+		margin-top: 5px;
+	}
 `;
 
 const Total = styled.div`
@@ -70,11 +112,23 @@ const Total = styled.div`
 	flex-wrap: wrap;
 	justify-content: space-between;
 	margin-top: 20px;
+
+	@media ( max-width: 600px ) {
+		font-size: 0.85em;
+		margin-top: 10px;
+	}
+`;
+
+const MobileCount = styled.span`
+	display: none;
+	@media ( max-width: 600px ) {
+		display: block;
+	}
 `;
 function DummyLineItem( {
 	product,
 	meta,
-	productCount = 1,
+	productCount,
 }: {
 	product: ProductListItem | null;
 	meta?: TranslateResult;
@@ -87,30 +141,40 @@ function DummyLineItem( {
 	}
 	return (
 		<DummyLineItemContainer>
-			<div className="page-picker__title">{ product.product_name }</div>
+			<div className="page-picker__title">
+				{ product.product_name }
+				{ productCount ? <MobileCount>&nbsp;{ `x ${ productCount }` }</MobileCount> : null }
+			</div>
 			<div className="page-picker__price">
-				{ formatCurrency( product.cost * productCount, currencyCode ) }
+				{ productCount
+					? formatCurrency( product.cost * productCount, currencyCode )
+					: product.cost_display }
 			</div>
 			{ meta && <div className="page-picker__meta">{ meta }</div> }
 		</DummyLineItemContainer>
 	);
 }
 
+interface CartItem {
+	product: ProductListItem;
+	meta?: TranslateResult;
+	productCount?: number;
+	lineCost: number;
+}
+
 export default function DummyMiniDIFMShoppingCart( {
 	selectedPages,
+	newOrExistingSiteChoice,
+	isPaidPlan,
 }: {
 	selectedPages: string[];
+	newOrExistingSiteChoice: string;
+	isPaidPlan: boolean;
 } ) {
 	const translate = useTranslate();
-	const dispatch = useDispatch();
-
-	useEffect( () => {
-		dispatch( requestProductsList() );
-	}, [ dispatch ] );
-
 	const FREE_PAGES = 5;
 
-	const exptraPageProduct = useSelector( ( state ) =>
+	const extraPageProduct = useSelector( ( state ) =>
 		getProductBySlug( state, WPCOM_DIFM_EXTRA_PAGE )
 	) as ProductListItem;
 	const difmLiteProduct = useSelector( ( state ) =>
@@ -127,41 +191,70 @@ export default function DummyMiniDIFMShoppingCart( {
 	const extraPageCount = Math.max( 0, selectedPages.length - FREE_PAGES );
 	const extraPageMeta = translate( 'Extra Page: %(perPageCost)s x %(extraPageCount)s', {
 		args: {
-			perPageCost: exptraPageProduct.cost_display,
+			perPageCost: extraPageProduct.cost_display,
 			extraPageCount: extraPageCount,
 		},
 	} );
 	const activePlan = isEnabled( 'plans/pro-plan' ) ? proPlan : premiumPlan;
-	const totalCost =
-		activePlan.cost + difmLiteProduct.cost + exptraPageProduct.cost * extraPageCount;
+
+	let displayedCartItems: CartItem[] = [
+		{
+			product: activePlan,
+			meta: translate( 'Plan Subscription: %(planPrice)s per year', {
+				args: { planPrice: formatCurrency( activePlan.cost, currencyCode ) },
+			} ),
+			lineCost: activePlan.cost,
+		},
+		{
+			product: difmLiteProduct,
+			lineCost: difmLiteProduct.cost,
+		},
+		{
+			product: extraPageProduct,
+			meta: extraPageMeta,
+			lineCost: extraPageProduct.cost * extraPageCount,
+			productCount: extraPageCount,
+		},
+	];
+
+	// Hide pro plan if existing site has a paid plan
+	if ( newOrExistingSiteChoice !== 'new-site' && isPaidPlan ) {
+		displayedCartItems = displayedCartItems.filter(
+			( p ) => p.product.product_slug !== activePlan.product_slug
+		);
+	}
+
+	if ( extraPageCount === 0 ) {
+		displayedCartItems = displayedCartItems.filter(
+			( p ) => p.product.product_slug !== extraPageProduct.product_slug
+		);
+	}
+
+	const totalCost = displayedCartItems.reduce(
+		( total, currentProduct ) => currentProduct.lineCost + total,
+		0
+	);
 	const totalCostFormatted = formatCurrency( totalCost, currencyCode );
+
 	return (
-		<>
-			<CartTitle>{ translate( 'Cart' ) }</CartTitle>
-			<LineItemsWrapper>
-				{
-					<DummyLineItem
-						product={ activePlan }
-						meta={ translate( 'Plan Subscription: %(planPrice)s per year', {
-							args: { planPrice: formatCurrency( activePlan.cost, currencyCode ) },
-						} ) }
-					/>
-				}
+		<CartContainer>
+			<Cart>
+				<CartTitle>{ translate( 'Cart' ) }</CartTitle>
+				<LineItemsWrapper>
+					{ displayedCartItems.map( ( item ) => (
+						<DummyLineItem
+							product={ item.product }
+							meta={ item.meta }
+							productCount={ item.productCount }
+						/>
+					) ) }
 
-				{ difmLiteProduct && <DummyLineItem product={ difmLiteProduct } /> }
-				{ extraPageCount > 0 && (
-					<DummyLineItem
-						product={ exptraPageProduct }
-						meta={ extraPageMeta }
-						productCount={ extraPageCount }
-					/>
-				) }
-
-				<Total>
-					<div>{ translate( 'Total' ) }</div>
-					<div>{ totalCostFormatted }</div>
-				</Total>
-			</LineItemsWrapper>
-		</>
+					<Total>
+						<div>{ translate( 'Total' ) }</div>
+						<div>{ totalCostFormatted }</div>
+					</Total>
+				</LineItemsWrapper>
+			</Cart>
+		</CartContainer>
 	);
 }
