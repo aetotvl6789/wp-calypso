@@ -21,6 +21,7 @@ import {
 import { useTranslatedPageTitles } from 'calypso/signup/difm/translation-hooks';
 import StepWrapper from 'calypso/signup/step-wrapper';
 import { saveSignupStep, submitSignupStep } from 'calypso/state/signup/progress/actions';
+import DummyMiniDIFMShoppingCart from './dummy-mini-difm-shopping-cart';
 
 import './style.scss';
 
@@ -224,11 +225,12 @@ export default function DIFMPagePicker( props: StepProps ) {
 		components: { wbr: <wbr /> },
 	} );
 	const subHeaderText = translate(
-		'Select your desired pages by clicking the thumbnails. {{br}}{{/br}}You can select up to 5 pages.',
+		'Select your desired pages by clicking the thumbnails. {{br}}{{/br}}You can select up to 5 pages for free.',
 		{
 			components: { br: <br /> },
 		}
 	);
+
 	return (
 		<StepWrapper
 			headerText={ headerText }
@@ -247,6 +249,7 @@ export default function DIFMPagePicker( props: StepProps ) {
 					{ translate( 'Go to Checkout' ) }
 				</StyledButton>
 			}
+			headerContent={ <DummyMiniDIFMShoppingCart selectedPages={ selectedPages } /> }
 			{ ...props }
 		/>
 	);

@@ -165,6 +165,7 @@ class StepWrapper extends Component {
 			flowName,
 			stepContent,
 			headerButton,
+			headerContent,
 			hideFormattedHeader,
 			hideBack,
 			hideSkip,
@@ -219,6 +220,7 @@ class StepWrapper extends Component {
 									<img src={ headerImageUrl } alt="" />
 								</div>
 							) }
+							<div className="step-wrapper__header-content">{ headerContent }</div>
 							{ headerButton && (
 								<div className="step-wrapper__header-button">{ headerButton }</div>
 							) }
