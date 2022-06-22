@@ -28,7 +28,7 @@ function dependenciesContainCartItem( dependencies ) {
 }
 
 function getAddOnsStep( steps ) {
-	if ( isEnabled( 'signup/add-ons-step' ) ) {
+	if ( isEnabled( 'signup/add-ons' ) ) {
 		return [ ...steps, 'add-ons' ];
 	}
 	return steps;
