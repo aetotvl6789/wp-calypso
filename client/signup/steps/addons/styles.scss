@@ -1,11 +1,14 @@
-.ReactModalPortal {
-	.difm-site-delete-confirmation {
-		.dialog__action-buttons {
-			text-align: center;
-			padding: 40px 16px 50px;
-			.button {
-				min-width: 152px;
-			}
-		}
+body.is-section-signup.is-white-signup .layout.is-section-signup .signup__step.is-addons .step-wrapper {
+	.formatted-header__title,
+	.formatted-header__subtitle {
+		text-align: left;
+	}
+	.formatted-header {
+		margin-right: 1rem;
+		max-width: 37.5rem;
+	}
+	.button {
+		border-radius: 4px;
 	}
 }
+

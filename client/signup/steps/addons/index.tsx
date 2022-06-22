@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import AddOnsGrid from 'calypso/my-sites/add-ons/components/add-ons-grid';
 import useAddOns, { AddOnMeta } from 'calypso/my-sites/add-ons/hooks/use-add-ons';
 import CalypsoShoppingCartProvider from 'calypso/my-sites/checkout/calypso-shopping-cart-provider';
+import NavigationLink from 'calypso/signup/navigation-link';
 import StepWrapper from 'calypso/signup/step-wrapper';
 import { submitSignupStep } from 'calypso/state/signup/progress/actions';
 import './styles.scss';
@@ -15,6 +16,10 @@ interface Props {
 	stepName: string;
 	goToStep: () => void;
 	goToNextStep: () => void;
+	flowName: string;
+	positionInFlow: number;
+	defaultDependencies: object;
+	forwardUrl: string;
 }
 interface AddonsProps {
 	selectedAddons: string[];
@@ -28,8 +33,9 @@ const AddonsContainer = styled.div``;
 
 const ToggleButton = styled.button< { isSelect: boolean } >`
 	display: inline-block;
-	margin: 1rem 0;
+	margin: 1.5rem 0;
 	cursor: pointer;
+	border-bottom: solid 1px #000;
 
 	&::before {
 		content: ${ ( { isSelect } ) => ( isSelect ? "'-'" : "'+'" ) };
@@ -67,7 +73,7 @@ const Addons = ( {
 			<AddOnsGrid
 				actionPrimary={ { text: translate( 'Add to my plan' ), handler: onAddAddon } }
 				actionSelected={ {
-					text: translate( 'Remove from my plan' ),
+					text: translate( 'Remove add-on' ),
 					handler: onRemoveAddon,
 				} }
 				useAddOnSelectedStatus={ ( addon: string ) => !! hasAddon( addon ) }
@@ -105,9 +111,7 @@ export default function AddonsStep( props: Props ): React.ReactElement {
 				setSelectedAddons( [] );
 			} else {
 				selectedAddons.forEach( onRemoveAddon );
-				setSelectedAddons(
-					addOns.filter( ( addon ) => null !== addon ).map( ( addon ) => addon.slug )
-				);
+				setSelectedAddons( addOns.map( ( addon ) => ( addon ? addon.slug : '' ) ) );
 			}
 		},
 		[ addOns, onRemoveAddon, selectedAddons ]
@@ -153,7 +157,16 @@ export default function AddonsStep( props: Props ): React.ReactElement {
 				</CalypsoShoppingCartProvider>
 			}
 			hideSkip
-			hideNext={ false }
+			headerButton={
+				<NavigationLink
+					direction="forward"
+					labelText={ translate( 'Continue' ) }
+					forwardIcon={ null }
+					primary={ false }
+					borderless={ false }
+					{ ...props }
+				/>
+			}
 			goToNextStep={ submitAddons }
 		/>
 	);
