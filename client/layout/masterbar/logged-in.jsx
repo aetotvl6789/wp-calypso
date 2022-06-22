@@ -251,7 +251,7 @@ class MasterbarLoggedIn extends Component {
 		this.props.savePreference( MENU_POPOVER_PREFERENCE_KEY, true );
 	};
 
-	renderCheckout() {
+	renderCheckout( showHelpCenter ) {
 		const { isCheckoutPending, previousPath, siteSlug, isJetpackNotAtomic, title } = this.props;
 		return (
 			<AsyncLoad
@@ -262,6 +262,7 @@ class MasterbarLoggedIn extends Component {
 				previousPath={ previousPath }
 				siteSlug={ siteSlug }
 				isLeavingAllowed={ ! isCheckoutPending }
+				showHelpCenter={ showHelpCenter }
 			/>
 		);
 	}
@@ -491,24 +492,20 @@ class MasterbarLoggedIn extends Component {
 	}
 
 	render() {
-		const { isCheckout, isCheckoutPending } = this.props;
+		const { isInEditor, isCheckout, isCheckoutPending } = this.props;
 		const { isMobile } = this.state;
 
+		const currentSegment = 10; //percentage of users that will see the Help Center, not the FAB
+		const userSegment = this.props.user.ID % 100;
+		const userAllowedToHelpCenter = userSegment < currentSegment && this.props.locale === 'en';
+
 		if ( isCheckout || isCheckoutPending ) {
-			return this.renderCheckout();
+			return this.renderCheckout(
+				config.isEnabled( 'checkout/help-center' ) && userAllowedToHelpCenter
+			);
 		}
 		if ( isMobile ) {
-			const isHelpCenterEnabled = config.isEnabled( 'editor/help-center' );
-
-			const currentSegment = 10; //percentage of users that will see the Help Center, not the FAB
-			const userSegment = this.props.user.ID % 100;
-
-			if (
-				this.props.isInEditor &&
-				isHelpCenterEnabled &&
-				userSegment < currentSegment &&
-				this.props.locale === 'en'
-			) {
+			if ( userAllowedToHelpCenter && isInEditor && config.isEnabled( 'editor/help-center' ) ) {
 				return (
 					<Masterbar>
 						<div className="masterbar__section masterbar__section--left">
