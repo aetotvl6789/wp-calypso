@@ -1,6 +1,6 @@
 import { current as currentPage } from 'page';
 import {
-	addAddonsToCart,
+	addAddOnsToCart,
 	addPlanToCart,
 	createAccount,
 	createSite,
@@ -15,7 +15,7 @@ import {
 	addDomainToCart,
 	launchSiteApi,
 	isPlanFulfilled,
-	isAddonsFulfilled,
+	isAddOnsFulfilled,
 	isDomainFulfilled,
 	isSiteTypeFulfilled,
 	isSiteTopicFulfilled,
@@ -29,7 +29,7 @@ import {
 import { generateSteps } from './steps-pure';
 
 export default generateSteps( {
-	addAddonsToCart,
+	addAddOnsToCart,
 	addPlanToCart,
 	createAccount,
 	createSite,
@@ -45,7 +45,7 @@ export default generateSteps( {
 	addDomainToCart,
 	launchSiteApi,
 	isPlanFulfilled,
-	isAddonsFulfilled,
+	isAddOnsFulfilled,
 	isDomainFulfilled,
 	isSiteTypeFulfilled,
 	isSiteTopicFulfilled,

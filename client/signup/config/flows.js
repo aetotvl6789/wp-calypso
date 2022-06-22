@@ -32,8 +32,8 @@ function getOnboardingSteps() {
 		? [ 'user', 'domains', 'emails', 'plans' ]
 		: [ 'user', 'domains', 'plans' ];
 
-	if ( isEnabled( 'signup/addons-step' ) ) {
-		steps.push( 'addons' );
+	if ( isEnabled( 'signup/add-ons-step' ) ) {
+		steps.push( 'add-ons' );
 	}
 	return steps;
 }

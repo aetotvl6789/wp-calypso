@@ -1,5 +1,5 @@
 const stepNameToModuleName = {
-	addons: 'addons',
+	'add-ons': 'add-ons',
 	'clone-start': 'clone-start',
 	'clone-destination': 'clone-destination',
 	'clone-credentials': 'clone-credentials',

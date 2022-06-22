@@ -21,15 +21,15 @@ interface Props {
 	defaultDependencies: object;
 	forwardUrl: string;
 }
-interface AddonsProps {
-	selectedAddons: string[];
+interface AddOnsProps {
+	selectedAddOns: string[];
 	addOns: ( AddOnMeta | null )[];
-	onToggleAllAddons: ( allAddons: boolean ) => void;
+	onToggleAllAddOns: ( allAddOns: boolean ) => void;
 	onAddAddon: ( addonSlug: string ) => void;
 	onRemoveAddon: ( addonSlug: string ) => void;
 }
 
-const AddonsContainer = styled.div``;
+const AddOnsContainer = styled.div``;
 
 const ToggleButton = styled.button< { isSelect: boolean } >`
 	display: inline-block;
@@ -44,30 +44,30 @@ const ToggleButton = styled.button< { isSelect: boolean } >`
 	}
 `;
 
-const Addons = ( {
-	onToggleAllAddons,
+const AddOns = ( {
+	onToggleAllAddOns,
 	onAddAddon,
 	onRemoveAddon,
-	selectedAddons,
+	selectedAddOns,
 	addOns,
-}: AddonsProps ) => {
+}: AddOnsProps ) => {
 	const translate = useTranslate();
-	const [ allAddons, setAllAddons ] = useState< boolean >( false );
+	const [ allAddOns, setAllAddOns ] = useState< boolean >( false );
 
 	const hasAddon = ( addon: string ) =>
-		selectedAddons.find( ( product: string ) => product === addon );
+		selectedAddOns.find( ( product: string ) => product === addon );
 
 	const onToggleAllClick = useCallback( () => {
-		onToggleAllAddons( allAddons );
-		setAllAddons( ! allAddons );
-	}, [ allAddons, setAllAddons, onToggleAllAddons ] );
+		onToggleAllAddOns( allAddOns );
+		setAllAddOns( ! allAddOns );
+	}, [ allAddOns, setAllAddOns, onToggleAllAddOns ] );
 
-	const toggleText = ! allAddons
+	const toggleText = ! allAddOns
 		? translate( 'Select all add-ons' )
 		: translate( 'Remove all add-ons' );
 	return (
-		<AddonsContainer>
-			<ToggleButton onClick={ onToggleAllClick } isSelect={ allAddons }>
+		<AddOnsContainer>
+			<ToggleButton onClick={ onToggleAllClick } isSelect={ allAddOns }>
 				{ toggleText }
 			</ToggleButton>
 			<AddOnsGrid
@@ -80,49 +80,49 @@ const Addons = ( {
 				addOns={ addOns }
 				highlight={ false }
 			/>
-		</AddonsContainer>
+		</AddOnsContainer>
 	);
 };
 
-export default function AddonsStep( props: Props ): React.ReactElement {
+export default function AddOnsStep( props: Props ): React.ReactElement {
 	const translate = useTranslate();
 	const dispatch = useDispatch();
 	const addOns = useAddOns();
 
-	const [ selectedAddons, setSelectedAddons ] = useState< string[] >( [] );
+	const [ selectedAddOns, setSelectedAddOns ] = useState< string[] >( [] );
 
 	const onAddAddon = useCallback(
 		( addonSlug: string ) => {
-			setSelectedAddons( [ ...selectedAddons, addonSlug ] );
+			setSelectedAddOns( [ ...selectedAddOns, addonSlug ] );
 		},
-		[ selectedAddons ]
+		[ selectedAddOns ]
 	);
 
 	const onRemoveAddon = useCallback(
 		( addonSlug: string ) => {
-			setSelectedAddons( selectedAddons.filter( ( addon ) => addon !== addonSlug ) );
+			setSelectedAddOns( selectedAddOns.filter( ( addon ) => addon !== addonSlug ) );
 		},
-		[ selectedAddons ]
+		[ selectedAddOns ]
 	);
 
-	const onToggleAllAddons = useCallback(
-		( allAddons ) => {
-			if ( allAddons ) {
-				setSelectedAddons( [] );
+	const onToggleAllAddOns = useCallback(
+		( allAddOns ) => {
+			if ( allAddOns ) {
+				setSelectedAddOns( [] );
 			} else {
-				selectedAddons.forEach( onRemoveAddon );
-				setSelectedAddons( addOns.map( ( addon ) => ( addon ? addon.slug : '' ) ) );
+				selectedAddOns.forEach( onRemoveAddon );
+				setSelectedAddOns( addOns.map( ( addon ) => ( addon ? addon.slug : '' ) ) );
 			}
 		},
-		[ addOns, onRemoveAddon, selectedAddons ]
+		[ addOns, onRemoveAddon, selectedAddOns ]
 	);
 
 	const headerText = translate( 'Boost your plan with add-ons' );
 	const subHeaderText =
 		'Sed eros elit, vehicula eu nisi a, aliquet ullamcorper tortor. Aliquam vel augue vel magna laoreet faucibus sit amet a mauris.';
 
-	const submitAddons = useCallback( () => {
-		const cartItems: MinimalRequestCartProduct[] = selectedAddons.map( ( addonSlug ) => ( {
+	const submitAddOns = useCallback( () => {
+		const cartItems: MinimalRequestCartProduct[] = selectedAddOns.map( ( addonSlug ) => ( {
 			product_slug: addonSlug,
 		} ) );
 		const step = {
@@ -136,7 +136,7 @@ export default function AddonsStep( props: Props ): React.ReactElement {
 				cartItem: cartItems,
 			} )
 		);
-	}, [ dispatch, props.stepName, props.stepSectionName, selectedAddons ] );
+	}, [ dispatch, props.stepName, props.stepSectionName, selectedAddOns ] );
 
 	return (
 		<StepWrapper
@@ -147,11 +147,11 @@ export default function AddonsStep( props: Props ): React.ReactElement {
 			fallbackSubHeaderText={ subHeaderText }
 			stepContent={
 				<CalypsoShoppingCartProvider>
-					<Addons
-						onToggleAllAddons={ onToggleAllAddons }
+					<AddOns
+						onToggleAllAddOns={ onToggleAllAddOns }
 						onAddAddon={ onAddAddon }
 						onRemoveAddon={ onRemoveAddon }
-						selectedAddons={ selectedAddons }
+						selectedAddOns={ selectedAddOns }
 						addOns={ addOns }
 					/>
 				</CalypsoShoppingCartProvider>
@@ -165,9 +165,9 @@ export default function AddonsStep( props: Props ): React.ReactElement {
 					primary={ false }
 					borderless={ false }
 					{ ...props }
+					goToNextStep={ submitAddOns }
 				/>
 			}
-			goToNextStep={ submitAddons }
 		/>
 	);
 }

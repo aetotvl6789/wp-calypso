@@ -520,7 +520,7 @@ export function addPlanToCart( callback, dependencies, stepProvidedItems, reduxS
 
 	processItemCart( providedDependencies, newCartItems, callback, reduxStore, siteSlug, null, null );
 }
-export function addAddonsToCart(
+export function addAddOnsToCart(
 	callback,
 	dependencies,
 	stepProvidedItems,
@@ -1067,7 +1067,7 @@ export function excludeStepIfProfileComplete( stepName, defaultDependencies, nex
 	}
 }
 
-export function isAddonsFulfilled( stepName, defaultDependencies, nextProps ) {
+export function isAddOnsFulfilled( stepName, defaultDependencies, nextProps ) {
 	const { store, submitSignupStep } = nextProps;
 
 	const state = store.getState();
