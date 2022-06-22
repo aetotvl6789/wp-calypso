@@ -29,6 +29,7 @@ import { getCategorizationOptions } from './categories';
 import { STEP_NAME } from './constants';
 import GeneratedDesignPickerWebPreview from './generated-design-picker-web-preview';
 import PreviewToolbar from './preview-toolbar';
+import SellerUpgradeModal from './seller-upgrade-modal';
 import StickyPositioner from './sticky-positioner';
 import type { Step, ProvidedDependencies } from '../../types';
 import './style.scss';
@@ -44,6 +45,7 @@ const STICKY_OPTIONS = {
  */
 const SellerDesignPicker: Step = ( { navigation, flow } ) => {
 	const [ isForceStaticDesigns, setIsForceStaticDesigns ] = useState( false );
+	const [ showUpgradeModal, setShowUpgradeModal ] = useState( false );
 	// CSS breakpoints are set at 600px for mobile
 	const isMobile = ! useViewportMatch( 'small' );
 	const { goBack, submit, exitFlow } = navigation;
@@ -80,6 +82,10 @@ const SellerDesignPicker: Step = ( { navigation, flow } ) => {
 				site && select( SITE_STORE ).siteHasFeature( site.ID, WPCOM_FEATURES_PREMIUM_THEMES )
 		)
 	);
+
+	const closeUpgradeModal = () => {
+		setShowUpgradeModal( false );
+	};
 
 	const { data: themeDesigns = [] } = useDesignsBySite( site );
 
@@ -312,22 +318,32 @@ const SellerDesignPicker: Step = ( { navigation, flow } ) => {
 		} );
 
 		const stepContent = (
-			<WebPreview
-				showPreview
-				showClose={ false }
-				showEdit={ false }
-				externalUrl={ siteSlug }
-				showExternal={ true }
-				previewUrl={ previewUrl }
-				loadingMessage={ translate( '{{strong}}One moment, please…{{/strong}} loading your site.', {
-					components: { strong: <strong /> },
-				} ) }
-				toolbarComponent={ PreviewToolbar }
-				siteId={ site?.ID }
-				url={ site?.URL }
-				translate={ translate }
-				recordTracksEvent={ recordTracksEvent }
-			/>
+			<>
+				<SellerUpgradeModal
+					slug={ selectedDesign.slug }
+					isOpen={ showUpgradeModal }
+					closeModal={ closeUpgradeModal }
+				/>
+				<WebPreview
+					showPreview
+					showClose={ false }
+					showEdit={ false }
+					externalUrl={ siteSlug }
+					showExternal={ true }
+					previewUrl={ previewUrl }
+					loadingMessage={ translate(
+						'{{strong}}One moment, please…{{/strong}} loading your site.',
+						{
+							components: { strong: <strong /> },
+						}
+					) }
+					toolbarComponent={ PreviewToolbar }
+					siteId={ site?.ID }
+					url={ site?.URL }
+					translate={ translate }
+					recordTracksEvent={ recordTracksEvent }
+				/>
+			</>
 		);
 
 		return (
