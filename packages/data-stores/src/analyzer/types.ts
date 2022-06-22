@@ -10,6 +10,11 @@ export interface ColorsData {
 	background: Color[];
 	link: Color[];
 	text: Color[];
+	preferred_palette: {
+		background: Color;
+		link: Color;
+		text: Color;
+	};
 }
 
 export interface AnalyzeColorsResponse {
