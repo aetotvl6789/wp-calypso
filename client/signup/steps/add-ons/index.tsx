@@ -120,6 +120,9 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 	const headerText = translate( 'Boost your plan with add-ons' );
 	const subHeaderText =
 		'Sed eros elit, vehicula eu nisi a, aliquet ullamcorper tortor. Aliquam vel augue vel magna laoreet faucibus sit amet a mauris.';
+	const continueText = selectedAddOns.length
+		? translate( 'Go to checkout' )
+		: translate( 'Continue' );
 
 	const submitAddOns = useCallback( () => {
 		const cartItems: MinimalRequestCartProduct[] = selectedAddOns.map( ( addonSlug ) => ( {
@@ -160,7 +163,7 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 			headerButton={
 				<NavigationLink
 					direction="forward"
-					labelText={ translate( 'Continue' ) }
+					labelText={ continueText }
 					forwardIcon={ null }
 					primary={ false }
 					borderless={ false }
