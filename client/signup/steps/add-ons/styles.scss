@@ -1,4 +1,12 @@
 body.is-section-signup.is-white-signup .layout.is-section-signup .signup__step.is-add-ons .step-wrapper {
+	.step-wrapper__header {
+		align-items: flex-start;
+
+		.button {
+			margin-top: 0.375rem;
+		}
+	}
+
 	.formatted-header__title,
 	.formatted-header__subtitle {
 		text-align: left;
@@ -11,6 +19,7 @@ body.is-section-signup.is-white-signup .layout.is-section-signup .signup__step.i
 
 	.button {
 		border-radius: 4px;
+		font-weight: 500;
 	}
 }
 

@@ -29,8 +29,6 @@ interface AddOnsProps {
 	onRemoveAddon: ( addonSlug: string ) => void;
 }
 
-const AddOnsContainer = styled.div``;
-
 const ToggleButton = styled.button< { isSelect: boolean } >`
 	display: inline-block;
 	margin: 1.5rem 0;
@@ -66,7 +64,7 @@ const AddOns = ( {
 		? translate( 'Select all add-ons' )
 		: translate( 'Remove all add-ons' );
 	return (
-		<AddOnsContainer>
+		<>
 			<ToggleButton onClick={ onToggleAllClick } isSelect={ allAddOns }>
 				{ toggleText }
 			</ToggleButton>
@@ -80,7 +78,7 @@ const AddOns = ( {
 				addOns={ addOns }
 				highlight={ false }
 			/>
-		</AddOnsContainer>
+		</>
 	);
 };
 
