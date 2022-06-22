@@ -24,7 +24,6 @@ import StepWrapper from 'calypso/signup/step-wrapper';
 import { Dependencies } from 'calypso/signup/types';
 import { requestProductsList } from 'calypso/state/products-list/actions';
 import { getProductBySlug } from 'calypso/state/products-list/selectors';
-import { ProductListItem } from 'calypso/state/products-list/selectors/get-products-list';
 import { saveSignupStep, submitSignupStep } from 'calypso/state/signup/progress/actions';
 import DummyMiniDIFMShoppingCart from './dummy-mini-difm-shopping-cart';
 import './style.scss';
@@ -107,10 +106,6 @@ function PageCell( { pageId, popular, required, selectedPages, onClick }: PageCe
 	const isSelected = Boolean( selectedIndex > -1 );
 	const title = useTranslatedPageTitles()[ pageId ];
 
-	const extraPageProduct = useSelector( ( state ) =>
-		getProductBySlug( state, WPCOM_DIFM_EXTRA_PAGE )
-	) as ProductListItem;
-
 	return (
 		<GridCellContainer>
 			<BrowserView
@@ -123,9 +118,6 @@ function PageCell( { pageId, popular, required, selectedPages, onClick }: PageCe
 				<div>{ title }</div>
 				{ popular ? <PageCellBadge>{ translate( 'Popular' ) }</PageCellBadge> : null }
 				{ required ? <PageCellBadge>{ translate( 'Required' ) }</PageCellBadge> : null }
-				{ selectedIndex > 4 ? (
-					<PageCellBadge>{ extraPageProduct.cost_display }</PageCellBadge>
-				) : null }
 			</CellLabelContainer>
 		</GridCellContainer>
 	);

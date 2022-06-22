@@ -27,6 +27,7 @@ const CartContainer = styled.div`
 		align-items: center;
 		justify-content: center;
 	}
+	margin-bottom: 48px;
 `;
 const Cart = styled.div`
 	position: initial;
@@ -43,22 +44,24 @@ const DummyLineItemContainer = styled.div`
 	justify-content: space-between;
 	font-weight: 400;
 	color: #2c3338;
-	font-size: 1.1em;
-	padding: 20px 0;
+	font-size: 14px;
+	padding: 16px 0;
 	border-bottom: 1px solid #dcdcde;
 	position: relative;
 	.page-picker__title {
 		flex: 1;
 		word-break: break-word;
-		font-size: 16px;
 		@media ( max-width: 600px ) {
 			display: flex;
 			font-size: 0.9em;
 		}
 	}
+	.page-picker__price {
+		font-weight: 500;
+	}
 	.page-picker__meta {
 		color: #646970;
-		font-size: 14px;
+		font-size: 12px;
 		width: 100%;
 		display: flex;
 		flex-direction: row;
@@ -74,6 +77,8 @@ const DummyLineItemContainer = styled.div`
 	@media ( max-width: 600px ) {
 		font-size: 0.9em;
 		padding: 2px 0;
+		border: none;
+
 		.page-picker__meta {
 			display: none;
 		}
@@ -81,58 +86,58 @@ const DummyLineItemContainer = styled.div`
 `;
 
 const LineItemsWrapper = styled.div`
-	border-top: 1px solid #dcdcde;
 	box-sizing: border-box;
 	margin: 20px 0;
 	padding: 0;
 	overflow-y: auto;
 	max-height: 75vh;
-	width: 85%;
+	width: 100%;
+	max-width: 365px;
+	border-bottom: 1px solid #dcdcde;
 	@media ( max-width: 600px ) {
-		width: 100%;
 		margin: 0 0px;
-	}
-`;
-
-const CartTitle = styled.div`
-	font-size: 1.5rem;
-	line-height: 1em;
-	font-family: 'Recoleta';
-	margin-bottom: 5px;
-	margin-top: 35px;
-	@media ( max-width: 600px ) {
-		font-size: 1.25rem;
-		margin-top: 5px;
+		border: none;
 	}
 `;
 
 const Total = styled.div`
-	font-weight: 600;
+	font-weight: 500;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	margin-top: 20px;
+	padding: 30px 0;
+	div {
+		display: flex;
+		align-items: center;
+		&.value {
+			font-family: Recoleta;
+			font-size: 32px;
+			font-weight: 400;
+			@media ( max-width: 600px ) {
+				font-size: 16px;
+			}
+		}
+	}
 
 	@media ( max-width: 600px ) {
-		font-size: 0.85em;
-		margin-top: 10px;
+		font-size: 16px;
+		margin-top: 6px;
+		padding: 0;
+		padding-top: 6px;
+		border-top: 1px solid #eee;
 	}
 `;
 
-const MobileCount = styled.span`
-	display: none;
-	@media ( max-width: 600px ) {
-		display: block;
-	}
-`;
 function DummyLineItem( {
 	product,
 	meta,
 	productCount,
+	name,
 }: {
 	product: ProductListItem | null;
 	meta?: TranslateResult;
 	productCount?: number;
+	name?: string;
 } ) {
 	const currencyCode = useSelector( getCurrentUserCurrencyCode ) as string;
 
@@ -141,14 +146,11 @@ function DummyLineItem( {
 	}
 	return (
 		<DummyLineItemContainer>
-			<div className="page-picker__title">
-				{ product.product_name }
-				{ productCount ? <MobileCount>&nbsp;{ `x ${ productCount }` }</MobileCount> : null }
-			</div>
+			<div className="page-picker__title">{ name ?? product.product_name }</div>
 			<div className="page-picker__price">
-				{ productCount
-					? formatCurrency( product.cost * productCount, currencyCode )
-					: product.cost_display }
+				{ productCount !== undefined
+					? formatCurrency( product.cost * productCount, currencyCode, { precision: 0 } )
+					: formatCurrency( product.cost, currencyCode, { precision: 0 } ) }
 			</div>
 			{ meta && <div className="page-picker__meta">{ meta }</div> }
 		</DummyLineItemContainer>
@@ -156,6 +158,7 @@ function DummyLineItem( {
 }
 
 interface CartItem {
+	name?: string;
 	product: ProductListItem;
 	meta?: TranslateResult;
 	productCount?: number;
@@ -189,15 +192,15 @@ export default function DummyMiniDIFMShoppingCart( {
 	const currencyCode = useSelector( getCurrentUserCurrencyCode ) as string;
 
 	const extraPageCount = Math.max( 0, selectedPages.length - FREE_PAGES );
-	const extraPageMeta = translate( 'Extra Page: %(perPageCost)s x %(extraPageCount)s', {
-		args: {
-			perPageCost: extraPageProduct.cost_display,
-			extraPageCount: extraPageCount,
-		},
-	} );
 	const activePlan = isEnabled( 'plans/pro-plan' ) ? proPlan : premiumPlan;
 
 	let displayedCartItems: CartItem[] = [
+		{
+			name: 'Do It For Me (Lite)',
+			product: difmLiteProduct,
+			lineCost: difmLiteProduct.cost,
+			meta: translate( 'One-time fee' ),
+		},
 		{
 			product: activePlan,
 			meta: translate( 'Plan Subscription: %(planPrice)s per year', {
@@ -205,13 +208,17 @@ export default function DummyMiniDIFMShoppingCart( {
 			} ),
 			lineCost: activePlan.cost,
 		},
+
 		{
-			product: difmLiteProduct,
-			lineCost: difmLiteProduct.cost,
-		},
-		{
+			name: `${ extraPageCount } ${
+				extraPageCount === 1 ? translate( 'Extra Page' ) : translate( 'Extra Pages' )
+			}`,
 			product: extraPageProduct,
-			meta: extraPageMeta,
+			meta: translate( '%(perPageCost)s Per Extra Page', {
+				args: {
+					perPageCost: extraPageProduct.cost_display,
+				},
+			} ),
 			lineCost: extraPageProduct.cost * extraPageCount,
 			productCount: extraPageCount,
 		},
@@ -224,34 +231,23 @@ export default function DummyMiniDIFMShoppingCart( {
 		);
 	}
 
-	if ( extraPageCount === 0 ) {
-		displayedCartItems = displayedCartItems.filter(
-			( p ) => p.product.product_slug !== extraPageProduct.product_slug
-		);
-	}
-
 	const totalCost = displayedCartItems.reduce(
 		( total, currentProduct ) => currentProduct.lineCost + total,
 		0
 	);
-	const totalCostFormatted = formatCurrency( totalCost, currencyCode );
+	const totalCostFormatted = formatCurrency( totalCost, currencyCode, { precision: 0 } );
 
 	return (
 		<CartContainer>
 			<Cart>
-				<CartTitle>{ translate( 'Cart' ) }</CartTitle>
 				<LineItemsWrapper>
 					{ displayedCartItems.map( ( item ) => (
-						<DummyLineItem
-							product={ item.product }
-							meta={ item.meta }
-							productCount={ item.productCount }
-						/>
+						<DummyLineItem { ...item } />
 					) ) }
 
 					<Total>
 						<div>{ translate( 'Total' ) }</div>
-						<div>{ totalCostFormatted }</div>
+						<div className="page-picker__value">{ totalCostFormatted }</div>
 					</Total>
 				</LineItemsWrapper>
 			</Cart>
