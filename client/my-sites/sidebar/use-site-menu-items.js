@@ -78,8 +78,7 @@ const useSiteMenuItems = () => {
 		shouldShowAddOns: shouldShowAddOnsInFallbackMenu,
 	};
 
-	// return menuItems ?? buildFallbackResponse( fallbackDataOverrides );
-	return buildFallbackResponse( fallbackDataOverrides );
+	return menuItems ?? buildFallbackResponse( fallbackDataOverrides );
 };
 
 export default useSiteMenuItems;
