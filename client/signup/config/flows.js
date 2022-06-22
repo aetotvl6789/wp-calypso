@@ -27,13 +27,9 @@ function dependenciesContainCartItem( dependencies ) {
 	return dependencies.cartItem || dependencies.domainItem || dependencies.themeItem;
 }
 
-function getOnboardingSteps() {
-	const steps = isEnabled( 'signup/professional-email-step' )
-		? [ 'user', 'domains', 'emails', 'plans' ]
-		: [ 'user', 'domains', 'plans' ];
-
+function getAddOnsStep( steps ) {
 	if ( isEnabled( 'signup/add-ons-step' ) ) {
-		steps.push( 'add-ons' );
+		return [ ...steps, 'add-ons' ];
 	}
 	return steps;
 }
@@ -181,7 +177,7 @@ const flows = generateFlows( {
 	getDestinationFromIntent,
 	getDIFMSignupDestination,
 	getDIFMSiteContentCollectionDestination,
-	getOnboardingSteps,
+	getAddOnsStep,
 } );
 
 function removeUserStepFromFlow( flow ) {
