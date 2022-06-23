@@ -530,6 +530,7 @@ export function addAddOnsToCart(
 ) {
 	const slug = siteSlug || dependencies.siteSlug;
 	const { cartItem } = stepProvidedItems;
+
 	const providedDependencies = stepProvidedDependencies || { cartItem };
 	if ( ! cartItem || isEmpty( cartItem ) ) {
 		// the user hans't selected any addons

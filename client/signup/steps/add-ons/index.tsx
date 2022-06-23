@@ -130,7 +130,7 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 
 		dispatch(
 			submitSignupStep( step, {
-				cartItem: cartItems,
+				cartItem: cartItems.length ? cartItems : undefined,
 			} )
 		);
 	}, [ dispatch, props.stepName, props.stepSectionName, selectedAddOns ] );
