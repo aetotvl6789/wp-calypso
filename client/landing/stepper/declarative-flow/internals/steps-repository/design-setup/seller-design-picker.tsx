@@ -1,6 +1,6 @@
 import { isEnabled } from '@automattic/calypso-config';
 import { WPCOM_FEATURES_PREMIUM_THEMES } from '@automattic/calypso-products';
-import { Button } from '@automattic/components';
+import { Button, Gridicon } from '@automattic/components';
 import { useStarterDesignsGeneratedQuery } from '@automattic/data-stores';
 import DesignPicker, {
 	GeneratedDesignPicker,
@@ -335,11 +335,9 @@ const SellerDesignPicker: Step = ( { navigation, flow } ) => {
 				stepName={ STEP_NAME }
 				stepContent={ stepContent }
 				hideSkip
-				hideNext={ shouldUpgrade }
+				hideNext
 				className={ 'design-setup__preview' }
-				nextLabelText={ translate( 'Start with %(designTitle)s', { args: { designTitle } } ) }
 				goBack={ handleBackClick }
-				goNext={ () => pickDesign() }
 				formattedHeader={
 					<FormattedHeader
 						id={ 'design-setup-header' }
@@ -348,13 +346,20 @@ const SellerDesignPicker: Step = ( { navigation, flow } ) => {
 					/>
 				}
 				customizedActionButtons={
-					<>
+					<div>
+						<button type="button" className={ 'design-setup__info-popover' }>
+							<Gridicon fill={ 'white' } icon={ 'info-outline' } size={ 24 } />
+						</button>
 						{ shouldUpgrade ? (
 							<Button primary borderless={ false } onClick={ upgradePlan }>
 								{ translate( 'Upgrade Plan' ) }
 							</Button>
-						) : undefined }
-					</>
+						) : (
+							<Button primary borderless={ false } onClick={ () => pickDesign() }>
+								{ translate( 'Start with %(designTitle)s', { args: { designTitle } } ) }
+							</Button>
+						) }
+					</div>
 				}
 				recordTracksEvent={ recordStepContainerTracksEvent }
 			/>
