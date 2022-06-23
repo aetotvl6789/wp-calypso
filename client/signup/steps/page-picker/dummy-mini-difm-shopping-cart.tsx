@@ -196,7 +196,7 @@ export default function DummyMiniDIFMShoppingCart( {
 
 	let displayedCartItems: CartItem[] = [
 		{
-			name: 'Do It For Me (Lite)',
+			name: 'Website Design Service',
 			product: difmLiteProduct,
 			lineCost: difmLiteProduct.cost,
 			meta: translate( 'One-time fee' ),
@@ -214,7 +214,7 @@ export default function DummyMiniDIFMShoppingCart( {
 				extraPageCount === 1 ? translate( 'Extra Page' ) : translate( 'Extra Pages' )
 			}`,
 			product: extraPageProduct,
-			meta: translate( '%(perPageCost)s Per Extra Page', {
+			meta: translate( '%(perPageCost)s Per Page', {
 				args: {
 					perPageCost: extraPageProduct.cost_display,
 				},
