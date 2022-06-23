@@ -33,13 +33,9 @@ const ToggleButton = styled.button< { isSelect: boolean } >`
 	display: inline-block;
 	margin: 1.5rem 0;
 	cursor: pointer;
-	border-bottom: solid 1px #000;
-
-	&::before {
-		content: ${ ( { isSelect } ) => ( isSelect ? "'-'" : "'+'" ) };
-		display: inline-block;
-		margin-right: 3px;
-	}
+	text-decoration: underline;
+	font-size: 1rem;
+	font-weight: 500;
 `;
 
 const AddOns = ( {
@@ -61,8 +57,8 @@ const AddOns = ( {
 	}, [ allAddOns, setAllAddOns, onToggleAllAddOns ] );
 
 	const toggleText = ! allAddOns
-		? translate( 'Select all add-ons' )
-		: translate( 'Remove all add-ons' );
+		? '+ ' + translate( 'Select all add-ons' )
+		: '- ' + translate( 'Remove all add-ons' );
 	return (
 		<>
 			<ToggleButton onClick={ onToggleAllClick } isSelect={ allAddOns }>
