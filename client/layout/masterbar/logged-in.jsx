@@ -1,5 +1,6 @@
 import config from '@automattic/calypso-config';
 import { Popover, Button } from '@automattic/components';
+import { shouldShowHelpCenterToUser } from '@automattic/help-center';
 import { subscribeIsWithinBreakpoint, isWithinBreakpoint } from '@automattic/viewport';
 import { localize } from 'i18n-calypso';
 import page from 'page';
@@ -251,8 +252,13 @@ class MasterbarLoggedIn extends Component {
 		this.props.savePreference( MENU_POPOVER_PREFERENCE_KEY, true );
 	};
 
-	renderCheckout( showHelpCenter ) {
-		const { isCheckoutPending, previousPath, siteSlug, isJetpackNotAtomic, title } = this.props;
+	renderCheckout() {
+		const { isCheckoutPending, previousPath, siteSlug, isJetpackNotAtomic, title, user, locale } =
+			this.props;
+
+		const userAllowedToHelpCenter =
+			config.isEnabled( 'checkout/help-center' ) && shouldShowHelpCenterToUser( user.ID, locale );
+
 		return (
 			<AsyncLoad
 				require="calypso/layout/masterbar/checkout"
@@ -262,7 +268,7 @@ class MasterbarLoggedIn extends Component {
 				previousPath={ previousPath }
 				siteSlug={ siteSlug }
 				isLeavingAllowed={ ! isCheckoutPending }
-				showHelpCenter={ showHelpCenter }
+				showHelpCenter={ userAllowedToHelpCenter }
 			/>
 		);
 	}
@@ -492,20 +498,16 @@ class MasterbarLoggedIn extends Component {
 	}
 
 	render() {
-		const { isInEditor, isCheckout, isCheckoutPending } = this.props;
+		const { isInEditor, isCheckout, isCheckoutPending, user, locale } = this.props;
 		const { isMobile } = this.state;
 
-		const currentSegment = 10; //percentage of users that will see the Help Center, not the FAB
-		const userSegment = this.props.user.ID % 100;
-		const userAllowedToHelpCenter = userSegment < currentSegment && this.props.locale === 'en';
+		const userAllowedToHelpCenter = shouldShowHelpCenterToUser( user.ID, locale );
 
 		if ( isCheckout || isCheckoutPending ) {
-			return this.renderCheckout(
-				config.isEnabled( 'checkout/help-center' ) && userAllowedToHelpCenter
-			);
+			return this.renderCheckout();
 		}
 		if ( isMobile ) {
-			if ( userAllowedToHelpCenter && isInEditor && config.isEnabled( 'editor/help-center' ) ) {
+			if ( config.isEnabled( 'editor/help-center' ) && userAllowedToHelpCenter && isInEditor ) {
 				return (
 					<Masterbar>
 						<div className="masterbar__section masterbar__section--left">

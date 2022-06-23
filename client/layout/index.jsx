@@ -1,4 +1,5 @@
 import config from '@automattic/calypso-config';
+import { shouldShowHelpCenterToUser } from '@automattic/help-center';
 import { isWithinBreakpoint } from '@automattic/viewport';
 import { useBreakpoint } from '@automattic/viewport-react';
 import classnames from 'classnames';
@@ -369,18 +370,18 @@ export default withCurrentRoute(
 		const sidebarIsHidden = ! secondary || isWcMobileApp();
 		const chatIsDocked = ! [ 'reader', 'theme' ].includes( sectionName ) && ! sidebarIsHidden;
 
-		const userId = getCurrentUserId( state );
-		const currentSegment = 10; //percentage of users that will not see the FAB, but the Help Center
-		const userSegment = userId % 100;
-		const locale = getCurrentLocaleSlug( state );
 		const isEditor = getSectionName( state ) === 'gutenberg-editor';
 		const isCheckout = getSectionName( state ) === 'checkout';
 
+		const userAllowedToHelpCenter = shouldShowHelpCenterToUser(
+			getCurrentUserId( state ),
+			getCurrentLocaleSlug( state )
+		);
+
 		const disableFAB =
-			locale === 'en' &&
 			( ( isEditor && config.isEnabled( 'editor/help-center' ) ) ||
 				( isCheckout && config.isEnabled( 'checkout/help-center' ) ) ) &&
-			userSegment < currentSegment;
+			userAllowedToHelpCenter;
 
 		return {
 			masterbarIsHidden,
