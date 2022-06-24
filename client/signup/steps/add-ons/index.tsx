@@ -46,7 +46,7 @@ const AddOns = ( {
 	addOns,
 }: AddOnsProps ) => {
 	const translate = useTranslate();
-	const [ allAddOns, setAllAddOns ] = useState< boolean >( false );
+	const shouldSelectAllAddons = selectedAddOns.length > 0;
 
 	const hasAddon = useCallback(
 		( addon: string ) => selectedAddOns.some( ( product: string ) => product === addon ),
@@ -54,9 +54,8 @@ const AddOns = ( {
 	);
 
 	const onToggleAllClick = useCallback( () => {
-		onToggleAllAddOns( allAddOns );
-		setAllAddOns( ! allAddOns );
-	}, [ allAddOns, setAllAddOns, onToggleAllAddOns ] );
+		onToggleAllAddOns( shouldSelectAllAddons );
+	}, [ shouldSelectAllAddons, onToggleAllAddOns ] );
 
 	const getAddOnSelectedStatus = useCallback(
 		( addon: string ) => {
@@ -69,12 +68,12 @@ const AddOns = ( {
 		[ hasAddon, translate ]
 	);
 
-	const toggleText = ! allAddOns
+	const toggleText = ! shouldSelectAllAddons
 		? '+ ' + translate( 'Select all add-ons' )
 		: '- ' + translate( 'Remove all add-ons' );
 	return (
 		<>
-			<ToggleButton onClick={ onToggleAllClick } isSelect={ allAddOns }>
+			<ToggleButton onClick={ onToggleAllClick } isSelect={ shouldSelectAllAddons }>
 				{ toggleText }
 			</ToggleButton>
 			<AddOnsGrid
@@ -113,8 +112,8 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 	);
 
 	const onToggleAllAddOns = useCallback(
-		( allAddOns ) => {
-			if ( allAddOns ) {
+		( shouldSelectAllAddons ) => {
+			if ( shouldSelectAllAddons ) {
 				setSelectedAddOns( [] );
 			} else {
 				selectedAddOns.forEach( onRemoveAddon );
