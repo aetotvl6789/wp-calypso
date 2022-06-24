@@ -48,13 +48,26 @@ const AddOns = ( {
 	const translate = useTranslate();
 	const [ allAddOns, setAllAddOns ] = useState< boolean >( false );
 
-	const hasAddon = ( addon: string ) =>
-		selectedAddOns.find( ( product: string ) => product === addon );
+	const hasAddon = useCallback(
+		( addon: string ) => selectedAddOns.some( ( product: string ) => product === addon ),
+		[ selectedAddOns ]
+	);
 
 	const onToggleAllClick = useCallback( () => {
 		onToggleAllAddOns( allAddOns );
 		setAllAddOns( ! allAddOns );
 	}, [ allAddOns, setAllAddOns, onToggleAllAddOns ] );
+
+	const getAddOnSelectedStatus = useCallback(
+		( addon: string ) => {
+			const selected = hasAddon( addon );
+			return {
+				selected,
+				text: translate( 'Added to your plan' ),
+			};
+		},
+		[ hasAddon, translate ]
+	);
 
 	const toggleText = ! allAddOns
 		? '+ ' + translate( 'Select all add-ons' )
@@ -70,9 +83,9 @@ const AddOns = ( {
 					text: translate( 'Remove add-on' ),
 					handler: onRemoveAddon,
 				} }
-				useAddOnSelectedStatus={ ( addon: string ) => !! hasAddon( addon ) }
+				useAddOnSelectedStatus={ getAddOnSelectedStatus }
 				addOns={ addOns }
-				highlight={ false }
+				highlightFeatured={ true }
 			/>
 		</>
 	);
@@ -105,7 +118,7 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 				setSelectedAddOns( [] );
 			} else {
 				selectedAddOns.forEach( onRemoveAddon );
-				setSelectedAddOns( addOns.map( ( addon ) => ( addon ? addon.slug : '' ) ) );
+				setSelectedAddOns( addOns.map( ( addon ) => ( addon ? addon.productSlug : '' ) ) );
 			}
 		},
 		[ addOns, onRemoveAddon, selectedAddOns ]
