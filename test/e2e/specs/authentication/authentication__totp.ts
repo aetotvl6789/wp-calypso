@@ -6,9 +6,7 @@ import {
 	DataHelper,
 	MeSidebarComponent,
 	NavbarComponent,
-	SecretsManager,
 	TestAccount,
-	TOTPClient,
 } from '@automattic/calypso-e2e';
 import { Page, Browser } from 'playwright';
 
@@ -19,11 +17,6 @@ describe( DataHelper.createSuiteTitle( 'Authentication: TOTP' ), function () {
 	let testAccount: TestAccount;
 
 	beforeAll( async () => {
-		const totpClient = new TOTPClient(
-			SecretsManager.secrets.testAccounts.totpUser.totpKey as string
-		);
-		await totpClient.getToken();
-
 		page = await browser.newPage();
 	} );
 
