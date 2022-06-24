@@ -200,6 +200,11 @@ class GoogleLoginButton extends Component {
 			return;
 		}
 
+		if ( config.isEnabled( 'migration/sign-in-with-google' ) ) {
+			this.client.requestCode();
+			return;
+		}
+
 		const { responseHandler } = this.props;
 
 		// Options are documented here:
