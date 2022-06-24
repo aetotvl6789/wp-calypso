@@ -91,6 +91,11 @@ export const siteSetupFlow: Flow = {
 		const { FSEActive } = useFSEStatus();
 		const dispatch = reduxDispatch();
 
+		//Set up the static percentage for the vertical & intent steps
+		if ( currentStep === 'vertical' || currentStep === 'intent' ) {
+			setStepProgress( { progress: 1, count: 15 } );
+		}
+
 		// Set up Step progress for Woo flow - "Step 2 of 4"
 		if ( intent === 'sell' && storeType === 'power' ) {
 			switch ( currentStep ) {
@@ -108,22 +113,23 @@ export const siteSetupFlow: Flow = {
 					break;
 			}
 		}
-		if ( intent === 'build' ) {
-			switch ( currentStep ) {
-				case 'vertical':
-					setStepProgress( { progress: 1, count: 3 } );
-					break;
-				case 'intent':
-					setStepProgress( { progress: 2, count: 4 } );
-					break;
-				case 'designSetup':
-					setStepProgress( { progress: 3, count: 4 } );
-					break;
-				case 'processing':
-					setStepProgress( { progress: 4, count: 4 } );
-					break;
-			}
-		} else {
+		// if ( intent === 'build' ) {
+		// 	switch ( currentStep ) {
+		// 		case 'vertical':
+		// 			setStepProgress( { progress: 1, count: 3 } );
+		// 			break;
+		// 		case 'intent':
+		// 			setStepProgress( { progress: 2, count: 4 } );
+		// 			break;
+		// 		case 'designSetup':
+		// 			setStepProgress( { progress: 3, count: 4 } );
+		// 			break;
+		// 		case 'processing':
+		// 			setStepProgress( { progress: 4, count: 4 } );
+		// 			break;
+		// 	}
+		// }
+		else {
 			setStepProgress( undefined );
 		}
 
