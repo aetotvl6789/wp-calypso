@@ -5,7 +5,6 @@ import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import AddOnsGrid from 'calypso/my-sites/add-ons/components/add-ons-grid';
 import useAddOns, { AddOnMeta } from 'calypso/my-sites/add-ons/hooks/use-add-ons';
-import CalypsoShoppingCartProvider from 'calypso/my-sites/checkout/calypso-shopping-cart-provider';
 import NavigationLink from 'calypso/signup/navigation-link';
 import StepWrapper from 'calypso/signup/step-wrapper';
 import { submitSignupStep } from 'calypso/state/signup/progress/actions';
@@ -24,12 +23,12 @@ interface Props {
 interface AddOnsProps {
 	selectedAddOns: string[];
 	addOns: ( AddOnMeta | null )[];
-	onToggleAllAddOns: ( allAddOns: boolean ) => void;
+	onToggleAllAddOns: () => void;
 	onAddAddon: ( addonSlug: string ) => void;
 	onRemoveAddon: ( addonSlug: string ) => void;
 }
 
-const ToggleButton = styled.button< { isSelect: boolean } >`
+const ToggleButton = styled.button`
 	display: inline-block;
 	margin: 1.5rem 0;
 	cursor: pointer;
@@ -46,36 +45,25 @@ const AddOns = ( {
 	addOns,
 }: AddOnsProps ) => {
 	const translate = useTranslate();
-	const shouldSelectAllAddons = selectedAddOns.length > 0;
-
-	const hasAddon = useCallback(
-		( addon: string ) => selectedAddOns.some( ( product: string ) => product === addon ),
-		[ selectedAddOns ]
-	);
-
-	const onToggleAllClick = useCallback( () => {
-		onToggleAllAddOns( shouldSelectAllAddons );
-	}, [ shouldSelectAllAddons, onToggleAllAddOns ] );
 
 	const getAddOnSelectedStatus = useCallback(
 		( addon: string ) => {
-			const selected = hasAddon( addon );
+			const selected = selectedAddOns.some( ( product: string ) => product === addon );
 			return {
 				selected,
 				text: translate( 'Added to your plan' ),
 			};
 		},
-		[ hasAddon, translate ]
+		[ selectedAddOns, translate ]
 	);
 
-	const toggleText = ! shouldSelectAllAddons
+	const toggleText = ! selectedAddOns.length
 		? '+ ' + translate( 'Select all add-ons' )
 		: '- ' + translate( 'Remove all add-ons' );
+
 	return (
 		<>
-			<ToggleButton onClick={ onToggleAllClick } isSelect={ shouldSelectAllAddons }>
-				{ toggleText }
-			</ToggleButton>
+			<ToggleButton onClick={ onToggleAllAddOns }>{ toggleText }</ToggleButton>
 			<AddOnsGrid
 				actionPrimary={ { text: translate( 'Add to my plan' ), handler: onAddAddon } }
 				actionSelected={ {
@@ -111,17 +99,17 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 		[ selectedAddOns ]
 	);
 
-	const onToggleAllAddOns = useCallback(
-		( shouldSelectAllAddons ) => {
-			if ( shouldSelectAllAddons ) {
-				setSelectedAddOns( [] );
-			} else {
-				selectedAddOns.forEach( onRemoveAddon );
-				setSelectedAddOns( addOns.map( ( addon ) => ( addon ? addon.productSlug : '' ) ) );
-			}
-		},
-		[ addOns, onRemoveAddon, selectedAddOns ]
-	);
+	const onToggleAllAddOns = useCallback( () => {
+		if ( selectedAddOns.length > 0 ) {
+			setSelectedAddOns( [] );
+		} else {
+			setSelectedAddOns(
+				addOns
+					.filter( ( addon ) => null !== addon )
+					.map( ( addon ) => ( addon as AddOnMeta ).productSlug )
+			);
+		}
+	}, [ addOns, selectedAddOns ] );
 
 	const headerText = translate( 'Boost your plan with add-ons' );
 	const subHeaderText =
@@ -131,18 +119,22 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 		: translate( 'Continue' );
 
 	const submitAddOns = useCallback( () => {
-		const cartItems: MinimalRequestCartProduct[] = selectedAddOns.map( ( addonSlug ) => ( {
-			product_slug: addonSlug,
-		} ) );
+		// We need to send out undefined to avoid checking out an empty cart.
+		const addOnProducts: MinimalRequestCartProduct[] | undefined = selectedAddOns.length
+			? selectedAddOns.map( ( addonSlug ) => ( {
+					product_slug: addonSlug,
+			  } ) )
+			: undefined;
+
 		const step = {
 			stepName: props.stepName,
 			stepSectionName: props.stepSectionName,
-			cartItem: cartItems,
+			cartItem: addOnProducts,
 		};
 
 		dispatch(
 			submitSignupStep( step, {
-				cartItem: cartItems.length ? cartItems : undefined,
+				cartItem: addOnProducts,
 			} )
 		);
 	}, [ dispatch, props.stepName, props.stepSectionName, selectedAddOns ] );
@@ -155,15 +147,13 @@ export default function AddOnsStep( props: Props ): React.ReactElement {
 			subHeaderText={ subHeaderText }
 			fallbackSubHeaderText={ subHeaderText }
 			stepContent={
-				<CalypsoShoppingCartProvider>
-					<AddOns
-						onToggleAllAddOns={ onToggleAllAddOns }
-						onAddAddon={ onAddAddon }
-						onRemoveAddon={ onRemoveAddon }
-						selectedAddOns={ selectedAddOns }
-						addOns={ addOns }
-					/>
-				</CalypsoShoppingCartProvider>
+				<AddOns
+					onToggleAllAddOns={ onToggleAllAddOns }
+					onAddAddon={ onAddAddon }
+					onRemoveAddon={ onRemoveAddon }
+					selectedAddOns={ selectedAddOns }
+					addOns={ addOns }
+				/>
 			}
 			hideSkip
 			headerButton={
